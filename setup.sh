@@ -1,10 +1,19 @@
 #!/usr/bin/env bash
 
-if [ -f /etc/debian_version ]; then
-	if [ "$(dpkg --list|grep -w mc)" = "" ]; then
-		sudo apt update
-		sudo apt install -y mc
+if [ "$(command -v mc )" = "" ]; then
+	if [ -f /etc/debian_version ]; then
+		if [ "$(dpkg --list|grep -w mc)" = "" ]; then
+			sudo apt update
+			sudo apt install -y mc
+		fi
+	elif [ -f /etc/redhat-version ]; then
+		if [ `dnf list installed|grep "mc\."` = "" ]; then
+			sudo dnf install -y mc
+		fi
 	fi
+fi
+
+if [ "$(command -v mc)" != "" ]; then
 	sudo cp /etc/mc/filehighlight.ini /etc/mc/filehighlight.ini.bak
 	sudo cp theme-enlightment/etc/mc/filehighlight.ini /etc/mc/
 	sudo cp theme-enlightment/usr/share/mc/skins/enlightment256.ini /usr/share/mc/skins/
